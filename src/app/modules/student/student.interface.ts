@@ -1,6 +1,6 @@
 export type UserNAme = {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
 };
 
@@ -23,7 +23,7 @@ export type LocalGuardian = {
 export type Student = {
   id: string;
   name: UserNAme;
-  gender: 'male' | 'female'| 'others';
+  gender: 'male' | 'female' | 'others';
   email: string;
   dateOfBirth?: string;
   contactNo: string;
@@ -31,7 +31,7 @@ export type Student = {
   presentAddress: string;
   permanentAddress: string;
   guardian: Guardian;
-  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   localGuardian: LocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'deactivate';

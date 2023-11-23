@@ -12,14 +12,14 @@ const userNAmeSchema = new Schema<UserNAme>({
     required: true,
     message: 'First name is required',
   },
-  middleName: { 
-    type: String, 
+  middleName: {
+    type: String,
     trim: true,
-    maxlength: [30, 'First name can not be more than 30 character'] 
+    maxlength: [30, 'First name can not be more than 30 character'],
   },
-  lastName: { 
-    type: String, 
-    required: true, 
+  lastName: {
+    type: String,
+    required: true,
     message: 'Last name is required',
   },
 });
@@ -31,7 +31,6 @@ const guardianSchema = new Schema<Guardian>({
     message: 'Father name is required',
     trim: true,
     maxlength: [30, 'First name can not be more than 30 character'],
-    
   },
   fatherOccupation: {
     type: String,
@@ -100,10 +99,10 @@ const studentSchema = new Schema<Student>({
     required: true,
     message: 'Gender must be one of: male, female, others',
   },
-  email: { 
-    type: String, 
-    required: true, 
-    unique: true, 
+  email: {
+    type: String,
+    required: true,
+    unique: true,
     message: 'Email is required',
   },
   dateOfBirth: { type: String },
