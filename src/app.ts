@@ -2,7 +2,8 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { studentRoute } from './app/modules/student/student.route';
 import { userRoutes } from './app/modules/user/user.route';
-import golobalErrorHandler from './app/midleware/golobalErrorHandler';
+import globalErrorHandler from './app/midleware/golobalErrorHandler';
+import notFoundHandler from './app/midleware/notfound';
 const app: Application = express();
 
 // parser
@@ -18,6 +19,9 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
-app.use(golobalErrorHandler)
+app.use(globalErrorHandler)
+
+// not Found
+app.use(notFoundHandler)
 
 export default app;
