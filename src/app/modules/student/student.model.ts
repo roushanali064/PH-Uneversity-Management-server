@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import bcrypt from 'bcrypt'
 import {
   TGuardian,
   TLocalGuardian,
@@ -8,7 +7,6 @@ import {
   StudentModel,
   TUserNAme,
 } from './student.interface';
-import config from '../../config';
 
 const userNAmeSchema = new Schema<TUserNAme>({
   firstName: {
@@ -99,12 +97,6 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
     unique: true,
     ref: 'User'
   },
-  password: {
-    type: String,
-    required: true,
-    message: 'password is required',
-    maxlength: [20, 'password can not be more than 20 character']
-  },
   name: {
     type: userNAmeSchema,
     required: true,
@@ -171,34 +163,6 @@ studentSchema.virtual('fullName').get(function(){
   )
 })
 
-
-studentSchema.pre('save', async function(next){
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_round));
-  next()
-})
-
-// middleware/hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next()
-})
-
-// query middleware/hook
-studentSchema.pre('find', function(next){
-  this.find({isDeleted: {$ne: true}});
-  next()
-})
-studentSchema.pre('findOne', function(next){
-  this.findOne({isDeleted: {$ne: true}});
-  next()
-})
-
-studentSchema.pre('aggregate', function(next){
-  this.pipeline().unshift({$match: {isDeleted: {$ne: true}}});
-  next()
-})
 
 
 // creating a custom instance methods
