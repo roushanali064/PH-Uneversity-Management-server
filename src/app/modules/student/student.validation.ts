@@ -50,29 +50,32 @@ const localGuardianValidationSchema = z.object({
 });
 
 // Define zod schema for student
-const studentValidationSchema = z.object({
-  id: z
-    .string()
-    .min(1, { message: 'Student ID is required and must be unique' }),
-  name: userNAmeValidationSchema,
-  gender: z.enum(['male', 'female', 'others']),
-  email: z.string().email({ message: 'Email is required' }),
-  dateOfBirth: z.string().optional(),
-  contactNo: z.string().min(1, { message: 'Contact number is required' }),
-  emergencyContactNo: z
-    .string()
-    .min(1, { message: 'Emergency contact number is required' }),
-  presentAddress: z.string().min(1, { message: 'Present address is required' }),
-  permanentAddress: z
-    .string()
-    .min(1, { message: 'Permanent address is required' }),
-  guardian: guardianValidationSchema,
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  localGuardian: localGuardianValidationSchema,
-  profileImg: z.string().optional(),
-  isDeleted: z.boolean(),
+const CreateStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNAmeValidationSchema,
+      gender: z.enum(['male', 'female', 'others']),
+      email: z.string().email({ message: 'Email is required' }),
+      dateOfBirth: z.string().optional(),
+      contactNo: z.string().min(1, { message: 'Contact number is required' }),
+      emergencyContactNo: z
+        .string()
+        .min(1, { message: 'Emergency contact number is required' }),
+      presentAddress: z.string().min(1, { message: 'Present address is required' }),
+      permanentAddress: z
+        .string()
+        .min(1, { message: 'Permanent address is required' }),
+      guardian: guardianValidationSchema,
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      localGuardian: localGuardianValidationSchema,
+      profileImg: z.string().optional(),
+    })
+  })
 });
 
-export default studentValidationSchema;
+export const studentValidation = {
+  CreateStudentValidationSchema
+};
