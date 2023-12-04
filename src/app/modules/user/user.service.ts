@@ -9,15 +9,20 @@ import { generateStudentId } from "./user.utitly";
 const createStudentIntoDB = async (password: string ,payload: TStudent) => {
   
   const user: Partial<TUser> = {}
+  // set default password
   user.password = password || (config.default_password) as string;
   user.role = 'student'
 
+  // find academic semester data
   const admissionSemester = await AcademicSemester.findById(payload.admissionSemester)
 
+  // set user id
   user.id = await generateStudentId(admissionSemester)
 
-    const createUser = await User.create(user);
-    // create a student
+  // create user
+  const createUser = await User.create(user);
+
+  // create a student
   if(Object.keys(createUser).length){
     payload.id = createUser.id;
     payload.user = createUser._id
