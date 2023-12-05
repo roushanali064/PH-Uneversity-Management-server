@@ -9,12 +9,12 @@ const router = express.Router();
 router.post('/create-academic-faculty',requestValidation(academicFacultyValidation.academicFacultyValidationSchema),academicFacultyController.createAcademicFaculty)
 
 // get all academic faculty route
-router.get('/academic-faculty',academicFacultyController.getAllAcademicFaculty)
+router.get('/',academicFacultyController.getAllAcademicFaculty)
 
 // get single academic faculty
-router.get('/academic-faculty/:facultyId', academicFacultyController.geaSingleAcademicFaculty)
+router.get('/:facultyId', academicFacultyController.geaSingleAcademicFaculty)
 
 // update academic faculty
-router.put('/academic-faculty/:facultyId',requestValidation(academicFacultyValidation.academicFacultyValidationSchema), academicFacultyController.updateAcademicFaculty)
+router.put('/:facultyId',requestValidation(academicFacultyValidation.academicFacultyValidationSchema), academicFacultyController.updateAcademicFaculty)
 
 export const academicFacultyRoute = router
