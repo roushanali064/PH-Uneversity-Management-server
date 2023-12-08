@@ -36,7 +36,8 @@ export type TStudent = {
   guardian: TGuardian;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   localGuardian: TLocalGuardian;
-  admissionSemester: Types.ObjectId
+  academicDepartment: Types.ObjectId;
+  admissionSemester: Types.ObjectId;
   profileImg?: string;
   isDeleted: true | false
 };

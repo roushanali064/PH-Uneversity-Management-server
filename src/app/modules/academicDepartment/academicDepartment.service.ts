@@ -9,7 +9,7 @@ const createAcademicDepartmentInToDB = async (payload: TAcademicDepartment) =>{
 
 // get all academic department
 const getAllAcademicDepartmentInToDB = async () =>{
-    const result = await AcademicDepartment.find()
+    const result = await AcademicDepartment.find().populate('academicFaculty')
     return result
 }
 
@@ -21,7 +21,7 @@ const getSingleAcademicDepartmentInToDB = async (id: string) =>{
 
 // update academic department
 const updateAcademicDepartmentInToDB =async (id: string, payload: TAcademicDepartment) => {
-    const result = await AcademicDepartment.findOneAndUpdate({_id: id},payload,{new: true})
+    const result = await AcademicDepartment.findOneAndUpdate({_id: id},payload,{new: true, runValidators: true})
     return result
 }
 

@@ -71,6 +71,7 @@ const CreateStudentValidationSchema = z.object({
         .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
         .optional(),
       localGuardian: localGuardianValidationSchema,
+      academicDepartment: z.string(),
       admissionSemester: z.string(),
       profileImg: z.string().optional(),
     })
