@@ -16,18 +16,6 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>({
     timestamps: true
 });
 
-academicDepartmentSchema.pre('findOneAndUpdate', async function(next){
-    const query = this.getQuery();
-    console.log(query);
-    const isDepartmentExits = await AcademicDepartment.findOne(query);
-    if(!isDepartmentExits){
-        console.log(isDepartmentExits);
-        throw new Error('Department not exits')
-    }
-    next()
-})
-
-
 // check the department exist or not
 academicDepartmentSchema.pre('save', async function(next){
     const isDepartmentExist = await AcademicDepartment.findOne({
