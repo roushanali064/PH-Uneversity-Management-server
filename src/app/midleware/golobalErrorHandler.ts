@@ -8,6 +8,7 @@ import config from '../config';
 import { handleZodError } from '../error/handleZodError';
 import handleMongooseError from '../error/handleMongoseError';
 import handleCastError from '../error/handleCastError';
+import handleDuplicateError from '../error/handleDuplicateError';
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next)=>{
     let statusCode = err.statusCode || 500
     let message =err.message || 'something went wrong'
@@ -37,6 +38,11 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next)=>{
       statusCode = simplifiedError?.statusCode
       message = simplifiedError?.message
       errorSources = simplifiedError?.errorSource
+    }else if (err?.code === 11000) {
+      const simplifiedError = handleDuplicateError(err);
+      statusCode = simplifiedError?.statusCode;
+      message = simplifiedError?.message;
+      errorSources = simplifiedError?.errorSource;
     }
 
     return res.status(statusCode).json({
