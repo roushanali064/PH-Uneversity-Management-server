@@ -9,6 +9,7 @@ import { handleZodError } from '../error/handleZodError';
 import handleMongooseError from '../error/handleMongoseError';
 import handleCastError from '../error/handleCastError';
 import handleDuplicateError from '../error/handleDuplicateError';
+import AppError from '../error/AppError';
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next)=>{
     let statusCode = err.statusCode || 500
     let message =err.message || 'something went wrong'
@@ -43,6 +44,23 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next)=>{
       statusCode = simplifiedError?.statusCode;
       message = simplifiedError?.message;
       errorSources = simplifiedError?.errorSource;
+    }else if (err instanceof AppError) {
+      statusCode = err.statusCode;
+      message = err?.message;
+      errorSources = [
+        {
+          path: '',
+          message: err?.message
+        }
+      ]
+    }else if (err instanceof Error) {
+      message = err?.message;
+      errorSources = [
+        {
+          path: '',
+          message: err?.message
+        }
+      ]
     }
 
     return res.status(statusCode).json({
