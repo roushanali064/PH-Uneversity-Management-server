@@ -6,14 +6,51 @@ import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
 // get all student into db
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find().populate('user').populate('admissionSemester').populate({
+const getAllStudentsFromDB = async (query: Record<string,unknown>) => {
+  const queryObj ={...query}
+
+  // search
+  let searchTerm = '';
+  if(query?.searchTerm){
+    searchTerm = query?.searchTerm as string
+  }
+
+  const studentSearchableFiled = ['name.firstName','name.lastName','email'];
+
+  const searchQuery = Student.find({
+    $or: studentSearchableFiled.map((filed)=>({
+      [filed] : {$regex: searchTerm, $options: 'i'}
+    }))
+  })
+
+  // filtering
+  const excludeFiled = ['searchTerm','sort','limit'];
+  excludeFiled.forEach((el)=> delete queryObj[el])
+
+  const filtering =  searchQuery.find(queryObj)
+
+  // sorting
+  let sort = '-createdAt'
+  if(query?.sort){
+    sort = query.sort as string
+  }
+
+  const sorting = filtering.sort(sort)
+
+  // limiting
+  let limit = 0
+  if(query?.limit){
+    limit = query.limit as number
+  }
+
+  const limiting = await sorting.limit(limit).populate('user').populate('admissionSemester').populate({
     path: 'academicDepartment',
     populate:{
       path: 'academicFaculty'
     }
   });
-  return result;
+
+  return limiting;
 };
 
 // get single student into db
