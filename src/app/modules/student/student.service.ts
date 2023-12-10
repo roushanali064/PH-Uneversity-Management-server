@@ -59,7 +59,6 @@ const getAllStudentsFromDB = async (query: Record<string,unknown>) => {
   if(query?.fields){
     fields = (query?.fields as string).split(',').join(' ')
   }
-  console.log(query);
 
   const filedFiltering = await limiting.select(fields).populate('user').populate('admissionSemester').populate({
     path: 'academicDepartment',
@@ -94,7 +93,6 @@ const updateStudentInToDb =async (id:string, payload: Partial<TStudent>) => {
   if(name && Object.keys(name).length){
     for(const [key, value] of Object.entries(name)){
       modifiedUpdateData[`name.${key}`] = value
-      console.log(`${key } and ${value}`);
     }
   }
 
