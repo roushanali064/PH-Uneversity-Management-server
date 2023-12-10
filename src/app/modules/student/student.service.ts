@@ -4,70 +4,18 @@ import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchableFiled } from './student.constant';
 
 // get all student into db
 const getAllStudentsFromDB = async (query: Record<string,unknown>) => {
-  const queryObj ={...query}
 
-  // search
-  let searchTerm = '';
-  if(query?.searchTerm){
-    searchTerm = query?.searchTerm as string
-  }
+  const studentQuery = new QueryBuilder(Student.find(),query).search(studentSearchableFiled).filter().sort().paginate().filedFiltering()
 
-  const studentSearchableFiled = ['name.firstName','name.lastName','email'];
+  const result  =  await studentQuery.modelQuery
 
-  const searchQuery = Student.find({
-    $or: studentSearchableFiled.map((filed)=>({
-      [filed] : {$regex: searchTerm, $options: 'i'}
-    }))
-  })
+  return result
 
-  // filtering
-  const excludeFiled = ['searchTerm','sort','limit','page','fields'];
-  excludeFiled.forEach((el)=> delete queryObj[el])
-
-  const filtering =  searchQuery.find(queryObj)
-
-  // sorting
-  let sort = '-createdAt'
-  if(query?.sort){
-    sort = query.sort as string
-  }
-
-  const sorting = filtering.sort(sort)
-
-  // limiting and pagination
-  let page = 1
-  let limit = 0
-  let skip = 0
-  if(query?.limit){
-    limit = Number(query.limit)
-  }
-
-  if(query?.page){
-    page = Number(query?.page)
-    skip = (page-1)*10
-  }
-  
-  const skipData = sorting.skip(skip)
-
-  const limiting =  skipData.limit(limit)
-
-  let fields = '-__v';
-
-  if(query?.fields){
-    fields = (query?.fields as string).split(',').join(' ')
-  }
-
-  const filedFiltering = await limiting.select(fields).populate('user').populate('admissionSemester').populate({
-    path: 'academicDepartment',
-    populate:{
-      path: 'academicFaculty'
-    }
-  });
-
-  return filedFiltering;
 };
 
 // get single student into db
