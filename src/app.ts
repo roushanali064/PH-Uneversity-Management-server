@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import globalErrorHandler from './app/midleware/golobalErrorHandler';
@@ -6,8 +7,9 @@ import router from './app/routes';
 const app: Application = express();
 
 // parser
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: ['http://localhost:5173']}));
 
 // application routes
 

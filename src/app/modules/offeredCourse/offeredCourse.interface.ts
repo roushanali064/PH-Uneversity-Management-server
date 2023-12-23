@@ -4,7 +4,7 @@ export type TDays = 'sat' | 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri';
 
 export type TOfferedCourse = {
     semesterRegistration: Types.ObjectId;
-    academicSemester: Types.ObjectId;
+    academicSemester?: Types.ObjectId;
     academicFaculty: Types.ObjectId;
     academicDepartment: Types.ObjectId;
     course: Types.ObjectId;
@@ -14,4 +14,10 @@ export type TOfferedCourse = {
     days: TDays,
     startTime: string;
     endTime: string;
+}
+
+export type TSchedule = {
+    days: TDays;
+    startTime: string;
+    endTime: string
 }

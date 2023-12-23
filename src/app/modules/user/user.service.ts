@@ -19,6 +19,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // set default password
   user.password = password || (config.default_password as string);
   user.role = 'student';
+  user.email = payload?.email
 
   // find academic semester data
   const admissionSemester = await AcademicSemester.findById(
@@ -74,6 +75,7 @@ const createFacultyInToDb = async (password: string, payload: TFaculty) =>{
 
   // set role
   user.role = 'faculty'
+  user.email = payload?.email
 
   // check academic department is exits or not
   const academicDepartment = await AcademicDepartment.findById(payload.academicDepartment)
@@ -125,7 +127,8 @@ const createAdminInToDb = async (password: string, payload: TFaculty) =>{
   user.password = password || (config.default_password)
 
   // set role
-  user.role = 'admin'
+  user.role = 'admin';
+  user.email = payload?.email;
 
 
   const session =  await mongoose.startSession()
@@ -164,8 +167,36 @@ const createAdminInToDb = async (password: string, payload: TFaculty) =>{
 
 }
 
+const getMeIntoDB = async (userId: string, role: string) =>{
+  
+  let result = null
+  if(role === 'student'){
+    result = await Student.findOne({id: userId})
+  }
+  if(role === 'admin'){
+    result = await Admin.findOne({id: userId})
+  }
+  if(role === 'faculty'){
+    result = await Faculty.findOne({id: userId})
+  }
+
+  return result
+}
+
+// change status
+const changeStatusFromDb = async (status: string, id: string) =>{
+  const result = await User.findByIdAndUpdate(
+    id,
+    {status},
+    {new: true}
+  )
+  return result
+}
+
 export const userService = {
   createStudentIntoDB,
   createFacultyInToDb,
-  createAdminInToDb
+  createAdminInToDb,
+  getMeIntoDB,
+  changeStatusFromDb
 };
