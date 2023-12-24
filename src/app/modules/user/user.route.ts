@@ -25,10 +25,25 @@ router.post(
 )
 
 // create-faculty route
-router.post('/create-faculty',requestValidation(facultyValidations.createFacultyValidationSchema),userController.createFaculty)
+router.post(
+    '/create-faculty',
+    upload.single('file'),
+    (req: Request,res:Response, next: NextFunction)=>{
+        req.body = JSON.parse(req.body.data);
+        next()
+    },
+    requestValidation(facultyValidations.createFacultyValidationSchema),
+    userController.createFaculty)
 
 // create-admin route
-router.post('/create-admin',requestValidation(adminValidations.createAdminValidationSchema),userController.createAdmin)
+router.post(
+    '/create-admin',
+    upload.single('file'),
+    (req: Request,res:Response, next: NextFunction)=>{
+        req.body = JSON.parse(req.body.data);
+        next()
+    },
+    requestValidation(adminValidations.createAdminValidationSchema),userController.createAdmin)
 
 // create-admin route
 router.get('/me',auth('student','admin','faculty'),userController.getMe)

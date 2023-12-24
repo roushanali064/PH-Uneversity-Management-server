@@ -75,7 +75,7 @@ const createStudentIntoDB = async (file: any,password: string, payload: TStudent
 };
 
 // create faculty in to db
-const createFacultyInToDb = async (password: string, payload: TFaculty) =>{
+const createFacultyInToDb = async (file: any,password: string, payload: TFaculty) =>{
   const user: Partial<TUser> = {};
 
   // set password
@@ -98,6 +98,11 @@ const createFacultyInToDb = async (password: string, payload: TFaculty) =>{
     await session.startTransaction()
 
     user.id = await generateFacultyId();
+
+    const path = file.path;
+    const imageName = `${user.id}-${payload?.name?.firstName}`
+    const {secure_url} = await uploadImageFromCludinary(path,imageName) as any
+    payload.profileImg = secure_url
 
     const newUser = await User.create([user],{session})
 
@@ -128,7 +133,7 @@ const createFacultyInToDb = async (password: string, payload: TFaculty) =>{
 }
 
 // create user in to db
-const createAdminInToDb = async (password: string, payload: TFaculty) =>{
+const createAdminInToDb = async (file: any,password: string, payload: TFaculty) =>{
   const user: Partial<TUser> = {};
 
   // set password
@@ -146,6 +151,11 @@ const createAdminInToDb = async (password: string, payload: TFaculty) =>{
     await session.startTransaction()
 
     user.id = await generateAdminId();
+
+    const path = file.path;
+    const imageName = `${user.id}-${payload?.name?.firstName}`
+    const {secure_url} = await uploadImageFromCludinary(path,imageName) as any
+    payload.profileImg = secure_url
 
     const newUser = await User.create([user],{session})
 
