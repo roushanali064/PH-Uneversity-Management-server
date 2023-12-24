@@ -15,5 +15,8 @@ export default {
   refresh_Token_expire: process.env.EXPAIR_REFRESH_TOKE,
   author_email: process.env.AUTHOR_EMAIL,
   author_email_password: process.env.AUTHOR_EMAIL_PASSWORD,
-  reset_password_ui_link: process.env.RESET_PASSWORD_UI_LINK
+  reset_password_ui_link: process.env.RESET_PASSWORD_UI_LINK,
+  cludinary_api_key: process.env.CLUDINARY_API_KEY,
+  cludinary_api_secret: process.env.CLUDINARY_API_SECRET,
+  cludinary_cloud_name: process.env.CLUDINARY_CLOUD_NAME,
 };

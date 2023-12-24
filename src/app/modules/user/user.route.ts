@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import { userController } from './user.controller';
 import requestValidation from '../../midleware/requestValidation';
 import { studentValidation } from '../student/student.validation';
@@ -7,6 +7,7 @@ import { adminValidations } from '../admin/admin.validation';
 import auth from '../../midleware/auth';
 import { userRole } from './user.constant';
 import { userValidation } from './user.validataion';
+import { upload } from '../../utils/uploadImageCludinary';
 
 const router = express.Router();
 
@@ -14,6 +15,11 @@ const router = express.Router();
 router.post(
     '/create-student',
     auth(userRole.admin),
+    upload.single('file'),
+    (req: Request,res:Response, next: NextFunction)=>{
+        req.body = JSON.parse(req.body.data);
+        next()
+    },
     requestValidation(studentValidation.CreateStudentValidationSchema),
     userController.createStudent
 )

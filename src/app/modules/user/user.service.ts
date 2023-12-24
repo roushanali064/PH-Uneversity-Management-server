@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import config from '../../config';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
@@ -12,9 +13,10 @@ import { TFaculty } from '../faculty/faculty.interface';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { Faculty } from '../faculty/faculty.model';
 import { Admin } from '../admin/admin.model';
+import { uploadImageFromCludinary } from '../../utils/uploadImageCludinary';
 
 // create user and student
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (file: any,password: string, payload: TStudent) => {
   const user: Partial<TUser> = {};
   // set default password
   user.password = password || (config.default_password as string);
@@ -36,6 +38,12 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     await session.startTransaction()
     // set user id
     user.id = await generateStudentId(admissionSemester);
+    
+    // image url
+    const path = file.path;
+    const imageName = `${user.id}-${payload?.name?.firstName}`
+    const {secure_url} = await uploadImageFromCludinary(path,imageName) as any
+    payload.profileImg = secure_url
 
     // create user
     const createUser = await User.create([user], { session });
