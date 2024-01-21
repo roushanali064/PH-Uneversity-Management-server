@@ -44,7 +44,7 @@ const refreshToken = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'check your email',
+    message: 'refresh token retrieved successfully',
     data: result,
   });
 });

@@ -7,18 +7,26 @@ const courseMarksSchema = new Schema<TCourseMarks>(
     classTaste1: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 10
     },
     midTerm: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 30
     },
     classTest2: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 10
     },
     finalTerm: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 50
     },
   },
   {
@@ -72,7 +80,8 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
     default: false
   },
   courseMarks: {
-    type: courseMarksSchema
+    type: courseMarksSchema,
+    default: {}
   },
   grade:{
     type: String,
