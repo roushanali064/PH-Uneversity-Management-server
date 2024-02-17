@@ -249,13 +249,16 @@ const forgetPasswordIntoDB = async (userId: string) => {
 </body>
 
     </html>`;
-    
+
   sendEmail(user?.email, passwordResetHTML);
 };
 
 // reset password
-const resetPassword = async (payload: {id: string, newPassword: string}, token: string) =>{
-    // checking is the user is exits
+const resetPassword = async (
+  payload: { id: string; newPassword: string },
+  token: string,
+) => {
+  // checking is the user is exits
   const user = await User.isUserExistsByCustomID(payload?.id);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'this user not exits');
@@ -273,10 +276,10 @@ const resetPassword = async (payload: {id: string, newPassword: string}, token: 
     throw new AppError(httpStatus.NOT_FOUND, 'this user blocked');
   }
 
-  const decoded = verifyJwtToken(token, config.jwt_access_secret as string)
+  const decoded = verifyJwtToken(token, config.jwt_access_secret as string);
 
-  if(decoded?.userId !== user?.id){
-    throw new AppError(httpStatus.FORBIDDEN, 'you are not authorized')
+  if (decoded?.userId !== user?.id) {
+    throw new AppError(httpStatus.FORBIDDEN, 'you are not authorized');
   }
 
   // hash password
@@ -296,13 +299,12 @@ const resetPassword = async (payload: {id: string, newPassword: string}, token: 
       passwordChangeTime: new Date(),
     },
   );
-
-}
+};
 
 export const authService = {
   loginFromDb,
   changePassword,
   refreshToken,
   forgetPasswordIntoDB,
-  resetPassword
+  resetPassword,
 };

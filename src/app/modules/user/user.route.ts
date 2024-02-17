@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express';
 import { userController } from './user.controller';
 import requestValidation from '../../midleware/requestValidation';
 import { studentValidation } from '../student/student.validation';
@@ -13,42 +13,52 @@ const router = express.Router();
 
 // create-student route
 router.post(
-    '/create-student',
-    auth(userRole.admin,userRole.superAdmin),
-    upload.single('file'),
-    (req: Request,res:Response, next: NextFunction)=>{
-        req.body = JSON.parse(req.body.data);
-        next()
-    },
-    requestValidation(studentValidation.CreateStudentValidationSchema),
-    userController.createStudent
-)
+  '/create-student',
+  auth(userRole.admin, userRole.superAdmin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  requestValidation(studentValidation.CreateStudentValidationSchema),
+  userController.createStudent,
+);
 
 // create-faculty route
 router.post(
-    '/create-faculty',
-    upload.single('file'),
-    (req: Request,res:Response, next: NextFunction)=>{
-        req.body = JSON.parse(req.body.data);
-        next()
-    },
-    requestValidation(facultyValidations.createFacultyValidationSchema),
-    userController.createFaculty)
+  '/create-faculty',
+  auth(userRole.superAdmin, userRole.admin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  requestValidation(facultyValidations.createFacultyValidationSchema),
+  userController.createFaculty,
+);
 
 // create-admin route
 router.post(
-    '/create-admin',
-    upload.single('file'),
-    (req: Request,res:Response, next: NextFunction)=>{
-        req.body = JSON.parse(req.body.data);
-        next()
-    },
-    requestValidation(adminValidations.createAdminValidationSchema),userController.createAdmin)
+  '/create-admin',
+  auth(userRole.superAdmin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  requestValidation(adminValidations.createAdminValidationSchema),
+  userController.createAdmin,
+);
 
-// create-admin route
-router.get('/me',auth('student','admin','faculty'),userController.getMe)
+// login
+router.get('/me', auth('student', 'admin', 'faculty'), userController.getMe);
 
 // change status route
-router.put('/change-status/:id',auth('admin'),requestValidation(userValidation.statusChanged),userController.changeStatus)
+router.put(
+  '/change-status/:id',
+  auth('admin'),
+  requestValidation(userValidation.statusChanged),
+  userController.changeStatus,
+);
 
 export const userRoutes = router;

@@ -8,7 +8,11 @@ import catchAsync from '../../utils/catchAsync';
 const createStudent = catchAsync(async (req: Request, res: Response) => {
   const { password, student: studentData } = req.body;
 
-  const result = await userService.createStudentIntoDB(req.file,password, studentData);
+  const result = await userService.createStudentIntoDB(
+    req.file,
+    password,
+    studentData,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -22,7 +26,11 @@ const createStudent = catchAsync(async (req: Request, res: Response) => {
 const createFaculty = catchAsync(async (req: Request, res: Response) => {
   const { password, faculty } = req.body;
 
-  const result = await userService.createFacultyInToDb(req.file,password, faculty);
+  const result = await userService.createFacultyInToDb(
+    req.file,
+    password,
+    faculty,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -36,7 +44,7 @@ const createFaculty = catchAsync(async (req: Request, res: Response) => {
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const { password, admin } = req.body;
 
-  const result = await userService.createAdminInToDb(req.file,password, admin);
+  const result = await userService.createAdminInToDb(req.file, password, admin);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -48,8 +56,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
 
 // get me
 const getMe = catchAsync(async (req: Request, res: Response) => {
-
-  const {userId, role} = req.user
+  const { userId, role } = req.user;
 
   const result = await userService.getMeIntoDB(userId, role);
 
@@ -62,10 +69,10 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
 });
 
 // change status
-const changeStatus = catchAsync(async (req, res)=>{
-  const {status} = req.body
-  const {id} = req.params;
-  
+const changeStatus = catchAsync(async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+
   const result = await userService.changeStatusFromDb(status, id);
 
   sendResponse(res, {
@@ -74,12 +81,12 @@ const changeStatus = catchAsync(async (req, res)=>{
     message: 'status changed successfully',
     data: result,
   });
-})
+});
 
 export const userController = {
   createStudent,
   createFaculty,
   createAdmin,
   getMe,
-  changeStatus
+  changeStatus,
 };

@@ -8,98 +8,108 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import { studentSearchableFiled } from './student.constant';
 
 // get all student into db
-const getAllStudentsFromDB = async (query: Record<string,unknown>) => {
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  const studentQuery = new QueryBuilder(
+    Student.find().populate(
+      'academicDepartment academicFaculty admissionSemester user',
+    ),
+    query,
+  )
+    .search(studentSearchableFiled)
+    .filter()
+    .sort()
+    .paginate()
+    .filedFiltering();
 
-  const studentQuery = new QueryBuilder(Student.find(),query).search(studentSearchableFiled).filter().sort().paginate().filedFiltering()
-
-  const result  =  await studentQuery.modelQuery
-
-  return result
-
+  const meta = await studentQuery.countTotal();
+  const result = await studentQuery.modelQuery;
+  return {
+    meta,
+    result,
+  };
 };
 
 // get single student into db
 const getSingleStudentsFromDB = async (id: string) => {
-  const result = await Student.findOne({ id }).populate('user').populate('admissionSemester').populate({
-    path: 'academicDepartment',
-    populate:{
-      path: 'academicFaculty'
-    }
-  });
+  const result = await Student.findOne({ id })
+    .populate('user')
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
   return result;
 };
 
 // update student into db
-const updateStudentInToDb =async (id:string, payload: Partial<TStudent>) => {
+const updateStudentInToDb = async (id: string, payload: Partial<TStudent>) => {
+  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
 
-  const {name, guardian, localGuardian, ...remainingStudentData} = payload
+  const modifiedUpdateData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
 
-  const modifiedUpdateData: Record<string,unknown> = {
-    ...remainingStudentData
-  }
-
-  if(name && Object.keys(name).length){
-    for(const [key, value] of Object.entries(name)){
-      modifiedUpdateData[`name.${key}`] = value
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdateData[`name.${key}`] = value;
     }
   }
 
-  if(guardian && Object.keys(guardian).length){
-    for(const [key, value] of Object.entries(guardian)){
-      modifiedUpdateData[`guardian.${key}`] = value
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdateData[`guardian.${key}`] = value;
     }
   }
 
-  if(localGuardian && Object.keys(localGuardian).length){
-    for(const [key, value] of Object.entries(localGuardian)){
-      modifiedUpdateData[`localGuardian.${key}`] = value
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdateData[`localGuardian.${key}`] = value;
     }
   }
-  
-  const result = await Student.findOneAndUpdate(
-    {id},
-    modifiedUpdateData,
-    {new: true, runValidators: true}
-  )
-  return result
 
-}
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdateData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
 
 // delete student into db
 const deleteSingleStudentsFromDB = async (id: string) => {
-  
-  const session = await mongoose.startSession()
+  const session = await mongoose.startSession();
 
-  try{
-    await session.startTransaction()
+  try {
+    await session.startTransaction();
 
     const studentData = await Student.findOneAndUpdate(
       { id },
-      {isDeleted: true},
-      {new: true, session}
+      { isDeleted: true },
+      { new: true, session },
     );
 
-    if(!studentData){
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to remove student')
+    if (!studentData) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to remove student');
     }
 
     const userData = await User.findOneAndUpdate(
       { id },
-      {isDeleted: true},
-      {new: true, session}
-    )
+      { isDeleted: true },
+      { new: true, session },
+    );
 
-    if(!userData){
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to remove user')
+    if (!userData) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to remove user');
     }
 
-    await session.commitTransaction()
-    await session.endSession()
+    await session.commitTransaction();
+    await session.endSession();
 
     return studentData;
-  }catch(err){
-    await session.abortTransaction()
-    await session.endSession()
+  } catch (err) {
+    await session.abortTransaction();
+    await session.endSession();
   }
 };
 
@@ -107,5 +117,5 @@ export const studentServices = {
   getAllStudentsFromDB,
   getSingleStudentsFromDB,
   deleteSingleStudentsFromDB,
-  updateStudentInToDb
+  updateStudentInToDb,
 };

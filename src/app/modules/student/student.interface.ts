@@ -24,7 +24,7 @@ export type TLocalGuardian = {
 
 export type TStudent = {
   id: string;
-  user: Types.ObjectId
+  user: Types.ObjectId;
   name: TUserNAme;
   gender: 'male' | 'female' | 'others';
   email: string;
@@ -40,7 +40,7 @@ export type TStudent = {
   academicDepartment: Types.ObjectId;
   academicFaculty: Types.ObjectId;
   profileImg?: string;
-  isDeleted: true | false
+  isDeleted: true | false;
 };
 
 export type StudentMethods = {
@@ -48,4 +48,8 @@ export type StudentMethods = {
   isUserExists(id: string): Promise<TStudent | null>;
 };
 
-export type StudentModel = Model<TStudent,Record<string, never>,StudentMethods>;
+export type StudentModel = Model<
+  TStudent,
+  Record<string, never>,
+  StudentMethods
+>;

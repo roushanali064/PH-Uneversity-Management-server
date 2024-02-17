@@ -9,7 +9,7 @@ const app: Application = express();
 // parser
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors({origin: 'http://localhost:5173', credentials: true}));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 // application routes
 
@@ -19,9 +19,9 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
-app.use(globalErrorHandler)
+app.use(globalErrorHandler);
 
 // not Found
-app.use(notFoundHandler)
+app.use(notFoundHandler);
 
 export default app;

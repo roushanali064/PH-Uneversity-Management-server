@@ -26,9 +26,8 @@ export const AcademicSemesterMonths: TAcademicSemesterMonth[] = [
   'December',
 ];
 
-
 export const academicSemesterMapper: TAcademicSemesterMapper = {
   Autumn: '01',
   Summer: '02',
-  Fall:'03'
-}
+  Fall: '03',
+};

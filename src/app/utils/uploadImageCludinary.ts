@@ -1,7 +1,7 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 import config from '../config';
 import multer from 'multer';
-import fs from 'fs'
+import fs from 'fs';
 
 cloudinary.config({
   cloud_name: config.cludinary_cloud_name,
@@ -10,34 +10,33 @@ cloudinary.config({
 });
 
 export const uploadImageFromCludinary = (path: string, imageName: string) => {
-  return new Promise((resolved,reject)=>{
+  return new Promise((resolved, reject) => {
     cloudinary.uploader.upload(
       path,
       { public_id: imageName },
       function (error, result) {
-        if(error){
-          reject(error)
+        if (error) {
+          reject(error);
         }
-        resolved(result)
-        fs.unlink(path,(err)=>{
-          if(err){
+        resolved(result as UploadApiResponse);
+        fs.unlink(path, (err) => {
+          if (err) {
             console.log(err);
           }
-        })
+        });
       },
     );
-  })
-  
+  });
 };
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.cwd()+'/uploads')
+    cb(null, process.cwd() + '/uploads');
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix)
-  }
-})
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix);
+  },
+});
 
-export const upload = multer({ storage: storage })
+export const upload = multer({ storage: storage });

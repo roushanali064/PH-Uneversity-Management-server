@@ -12,7 +12,11 @@ router.get('/', studentControllers.getAllStudents);
 router.get('/:studentId', studentControllers.getSingleStudent);
 
 // single student update route
-router.patch('/:studentId', requestValidation(studentValidation.updateStudentValidationSchema) ,studentControllers.updateStudent);
+router.patch(
+  '/:studentId',
+  requestValidation(studentValidation.updateStudentValidationSchema),
+  studentControllers.updateStudent,
+);
 
 // delete student route
 router.delete('/:studentId', studentControllers.deleteSingleStudent);

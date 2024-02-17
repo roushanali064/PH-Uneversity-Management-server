@@ -11,8 +11,8 @@ export const timeConflict = (
     const newEndTime = new Date(`1970-01-01T${newSchedule.endTime}:00`);
 
     if (newStartTime < existingEndTime && newEndTime > existingStartTime) {
-      return true
+      return true;
     }
   }
-  return false
+  return false;
 };

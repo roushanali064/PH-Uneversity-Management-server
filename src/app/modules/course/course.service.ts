@@ -13,18 +13,22 @@ const createCourseIntoDb = async (payload: TCourse) => {
 };
 
 // get all course
-const getAllCourseInToDB = async (payload: Record<string, unknown>) => {
-  const createCourse = new QueryBuilder(
+const getAllCourseInToDB = async (query: Record<string, unknown>) => {
+  const courseQuery = new QueryBuilder(
     course.find().populate('preRequisiteCourse.course'),
-    payload,
+    query,
   )
     .search(courseSearchAbleFields)
     .filter()
     .sort()
     .paginate()
     .filedFiltering();
-  const result = await createCourse.modelQuery;
-  return result;
+  const result = await courseQuery.modelQuery;
+  const meta = await courseQuery.countTotal();
+  return {
+    result,
+    meta,
+  };
 };
 
 // get single course
@@ -50,8 +54,8 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
       { new: true, runValidators: true, session },
     );
 
-    if(!updateCourse){
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course')
+    if (!updateCourse) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
     }
 
     if (preRequisiteCourse && preRequisiteCourse.length > 0) {
@@ -69,12 +73,15 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
         {
           new: true,
           runValidators: true,
-          session
+          session,
         },
       );
 
-      if(!deletedPrerequisiteCourseIntoDB){
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete prerequisite course into Db')
+      if (!deletedPrerequisiteCourseIntoDB) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'Failed to delete prerequisite course into Db',
+        );
       }
 
       const newPrerequisiteCourse = preRequisiteCourse.filter(
@@ -87,14 +94,17 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
           $addToSet: { preRequisiteCourse: { $each: newPrerequisiteCourse } },
         },
         {
-            new: true,
-            runValidators: true,
-            session
-        }
+          new: true,
+          runValidators: true,
+          session,
+        },
       );
 
-      if(!updatePrerequisiteCourseInToDb){
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update Prerequisite Course data')
+      if (!updatePrerequisiteCourseInToDb) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'Failed to update Prerequisite Course data',
+        );
       }
     }
 
@@ -102,14 +112,13 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
       .findById(id)
       .populate('preRequisiteCourse.course');
 
-      await session.commitTransaction()
-      await session.endSession
+    await session.commitTransaction();
+    await session.endSession;
 
     return result;
-
   } catch (err) {
-    await session.abortTransaction()
-    await session.endSession()
+    await session.abortTransaction();
+    await session.endSession();
   }
 };
 
@@ -124,37 +133,45 @@ const deleteCourseFromToDB = async (id: string) => {
 };
 
 // assign faculties into db
-const assignFacultiesIntoDB =async (id:string, payload: TCourseFaculty) => {
-    const result   =  await CourseFaculty.findByIdAndUpdate(
-        id,
-        {
-            course: id,
-            $addToSet: {faculties: {$each: payload}}
-        },
-        {
-            upsert: true,
-            new: true
-        }
-    )
+const assignFacultiesIntoDB = async (id: string, payload: TCourseFaculty) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
+    id,
+    {
+      course: id,
+      $addToSet: { faculties: { $each: payload } },
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+  );
 
-    return result
-}
+  return result;
+};
+
+const getFacultiesInCourseIntoDB = async (courseId: string) => {
+  const result = await CourseFaculty.findOne({ course: courseId }).populate(
+    'faculties',
+  );
+
+  return result;
+};
 
 // remove faculties into db
-const removeFacultiesIntoDB =async (id:string, payload: TCourseFaculty) => {
-    const result   =  await CourseFaculty.findByIdAndUpdate(
-        id,
-        {
-            $pull: {faculties: {$in: payload}}
-        },
-        {
-            new: true,
-            runValidators: true
-        }
-    )
+const removeFacultiesIntoDB = async (id: string, payload: TCourseFaculty) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
+    id,
+    {
+      $pull: { faculties: { $in: payload } },
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
 
-    return result
-}
+  return result;
+};
 
 export const courseService = {
   createCourseIntoDb,
@@ -163,5 +180,6 @@ export const courseService = {
   updateCourseIntoDB,
   deleteCourseFromToDB,
   assignFacultiesIntoDB,
-  removeFacultiesIntoDB
+  getFacultiesInCourseIntoDB,
+  removeFacultiesIntoDB,
 };

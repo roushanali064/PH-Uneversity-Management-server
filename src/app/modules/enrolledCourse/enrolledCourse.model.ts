@@ -8,25 +8,25 @@ const courseMarksSchema = new Schema<TCourseMarks>(
       type: Number,
       default: 0,
       min: 0,
-      max: 10
+      max: 10,
     },
     midTerm: {
       type: Number,
       default: 0,
       min: 0,
-      max: 30
+      max: 30,
     },
     classTest2: {
       type: Number,
       default: 0,
       min: 0,
-      max: 10
+      max: 10,
     },
     finalTerm: {
       type: Number,
       default: 0,
       min: 0,
-      max: 50
+      max: 50,
     },
   },
   {
@@ -38,68 +38,71 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
   semesterRegistration: {
     type: Schema.Types.ObjectId,
     ref: 'SemesterRegistration',
-    required: true
+    required: true,
   },
   academicSemester: {
     type: Schema.Types.ObjectId,
     ref: 'AcademicSemester',
-    required: true
+    required: true,
   },
   academicFaculty: {
     type: Schema.Types.ObjectId,
     ref: 'academicFaculty',
-    required: true
+    required: true,
   },
   academicDepartment: {
     type: Schema.Types.ObjectId,
-    ref: 'Academic Department',
-    required: true
+    ref: 'AcademicDepartment',
+    required: true,
   },
   offeredCourse: {
     type: Schema.Types.ObjectId,
     ref: 'OfferedCourse',
-    required: true
+    required: true,
   },
   course: {
     type: Schema.Types.ObjectId,
     ref: 'Course',
-    required: true
+    required: true,
   },
   student: {
     type: Schema.Types.ObjectId,
     ref: 'Student',
-    required: true
+    required: true,
   },
   faculty: {
     type: Schema.Types.ObjectId,
     ref: 'Faculty',
-    required: true
+    required: true,
   },
   isEnrolled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   courseMarks: {
     type: courseMarksSchema,
-    default: {}
+    default: {},
   },
-  grade:{
+  grade: {
     type: String,
     enum: grades,
-    default: 'NA'
+    default: 'NA',
   },
   gradePoint: {
     type: Number,
     min: 0,
     max: 4,
-    default: 0
+    default: 0,
   },
   isCompleted: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-const EnrolledCourseModel = model<TEnrolledCourse>('EnrolledCourse',enrolledCourseSchema);
+const EnrolledCourseModel = model<TEnrolledCourse>(
+  'EnrolledCourse',
+  enrolledCourseSchema,
+);
 
-export default EnrolledCourseModel
+export default EnrolledCourseModel;

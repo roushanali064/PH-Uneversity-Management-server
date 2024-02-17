@@ -8,35 +8,35 @@ import { userRole } from '../user/user.constant';
 const router = express.Router();
 
 router.post(
-    '/login',
-    requestValidation(authValidation.loginValidationSchema),
-    authController.login
-)
+  '/login',
+  requestValidation(authValidation.loginValidationSchema),
+  authController.login,
+);
 
 router.post(
-    '/change-password',
-    auth(userRole.admin,userRole.faculty,userRole.student),
-    requestValidation(authValidation.passwordChangeValidationSchema),
-    authController.changePassword
-)
+  '/change-password',
+  auth(userRole.admin, userRole.faculty, userRole.student, userRole.superAdmin),
+  requestValidation(authValidation.passwordChangeValidationSchema),
+  authController.changePassword,
+);
 
 router.post(
-    '/refresh-token',
-    requestValidation(authValidation.refreshTokenValidationSchema),
-    authController.refreshToken
-)
+  '/refresh-token',
+  requestValidation(authValidation.refreshTokenValidationSchema),
+  authController.refreshToken,
+);
 
 router.post(
-    '/forget-password',
-    requestValidation(authValidation.forgetPasswordValidationSchema),
-    authController.forgetPassword
-)
+  '/forget-password',
+  requestValidation(authValidation.forgetPasswordValidationSchema),
+  authController.forgetPassword,
+);
 
 // reset password
 router.post(
-    '/reset-password',
-    requestValidation(authValidation.resetPasswordValidationSchema),
-    authController.resetPassword
-)
+  '/reset-password',
+  requestValidation(authValidation.resetPasswordValidationSchema),
+  authController.resetPassword,
+);
 
-export const authRoute = router
+export const authRoute = router;

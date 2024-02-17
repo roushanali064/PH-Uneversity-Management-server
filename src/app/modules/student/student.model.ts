@@ -84,104 +84,103 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
-  id: {
-    type: String,
-    required: true,
-    unique: true,
-    message: 'Student ID is required and must be unique',
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>(
+  {
+    id: {
+      type: String,
+      required: true,
+      unique: true,
+      message: 'Student ID is required and must be unique',
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'user id is required'],
+      unique: true,
+      ref: 'User',
+    },
+    name: {
+      type: userNAmeSchema,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'others'],
+      required: true,
+      message: 'Gender must be one of: male, female, others',
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      message: 'Email is required',
+    },
+    dateOfBirth: { type: String },
+    contactNo: {
+      type: String,
+      required: true,
+      message: 'Contact number is required',
+    },
+    emergencyContactNo: {
+      type: String,
+      required: true,
+      message: 'Emergency contact number is required',
+    },
+    presentAddress: {
+      type: String,
+      required: true,
+      message: 'Present address is required',
+    },
+    permanentAddress: {
+      type: String,
+      required: true,
+      message: 'Permanent address is required',
+    },
+    guardian: {
+      type: guardianSchema,
+      required: true,
+    },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+      required: true,
+    },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+    },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'academicFaculty',
+    },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
+    profileImg: { type: String, default: '' },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  user: {
-    type: Schema.Types.ObjectId,
-    required: [true, 'user id is required'],
-    unique: true,
-    ref: 'User'
+  {
+    toJSON: {
+      virtuals: true,
+    },
   },
-  name: {
-    type: userNAmeSchema,
-    required: true,
-  },
-  gender: {
-    type: String,
-    enum: ['male', 'female', 'others'],
-    required: true,
-    message: 'Gender must be one of: male, female, others',
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    message: 'Email is required',
-  },
-  dateOfBirth: { type: String },
-  contactNo: {
-    type: String,
-    required: true,
-    message: 'Contact number is required',
-  },
-  emergencyContactNo: {
-    type: String,
-    required: true,
-    message: 'Emergency contact number is required',
-  },
-  presentAddress: {
-    type: String,
-    required: true,
-    message: 'Present address is required',
-  },
-  permanentAddress: {
-    type: String,
-    required: true,
-    message: 'Permanent address is required',
-  },
-  guardian: {
-    type: guardianSchema,
-    required: true,
-  },
-  bloodGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-  },
-  localGuardian: {
-    type: localGuardianSchema,
-    required: true,
-  },
-  academicDepartment:{
-    type: Schema.Types.ObjectId,
-    ref: 'AcademicDepartment'
-  },
-  academicFaculty:{
-    type: Schema.Types.ObjectId,
-    ref: 'AcademicFaculty'
-  },
-  admissionSemester:{
-    type: Schema.Types.ObjectId,
-    ref: 'AcademicSemester'
-  },
-  profileImg: { type: String, default: '' },
-  isDeleted:{
-    type: Boolean,
-    default: false
-  }
-},{
-  toJSON:{
-    virtuals: true
-  }
+);
+
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name?.firstName} ${this.name?.middleName} ${this.name?.lastName}`;
 });
 
-studentSchema.virtual('fullName').get(function(){
-  return(
-    `${this.name?.firstName} ${this.name?.middleName} ${this.name?.lastName}`
-  )
-})
-
-
-
 // creating a custom instance methods
-studentSchema.methods.isUserExists= async function (id: string) {
-  const existUser = await Student.findOne({id});
-  return existUser
-}
+studentSchema.methods.isUserExists = async function (id: string) {
+  const existUser = await Student.findOne({ id });
+  return existUser;
+};
 
 // make modal
 

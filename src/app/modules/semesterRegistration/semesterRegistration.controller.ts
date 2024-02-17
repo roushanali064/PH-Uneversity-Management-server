@@ -50,7 +50,8 @@ const getAllSemesterRegistration = catchAsync(
       statusCode: 200,
       success: true,
       message: 'semester retrieve successfully',
-      data: result,
+      meta: result.meta,
+      data: result.result,
     });
   },
 );

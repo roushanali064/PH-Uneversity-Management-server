@@ -27,11 +27,26 @@ const getSingleOfferedCourse = catchAsync(async (req, res) => {
 
 // get  offered course
 const getOfferedCourse = catchAsync(async (req, res) => {
-  const result = await offeredCourseService.getOfferedCourseFromDb();
+  const result = await offeredCourseService.getOfferedCourseFromDb(req.query);
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'offered course retrieved successfully',
+    data: result,
+  });
+});
+
+// get  my offered course
+const getMyOfferedCourse = catchAsync(async (req, res) => {
+  const userId = req.user.userId;
+  const result = await offeredCourseService.getMyOfferedCourseFromDb(
+    userId,
+    req.query,
+  );
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'My offered course retrieved successfully',
     data: result,
   });
 });
@@ -55,5 +70,6 @@ export const offeredCourseController = {
   createOfferedCourse,
   getSingleOfferedCourse,
   getOfferedCourse,
+  getMyOfferedCourse,
   updateOfferedCourse,
 };
